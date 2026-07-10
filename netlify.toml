@@ -1,4 +1,5 @@
 [build]
   command = "chmod +x build.sh && ./build.sh"
   publish = "build/web"
-  
+
+
