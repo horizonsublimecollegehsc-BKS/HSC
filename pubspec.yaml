@@ -1,20 +1,13 @@
-name: hsc100
-description: "Horizon Sublime College Platform"
-publish_to: 'none'
-version: 1.0.0+1
+# Fichier de configuration épuré pour forcer le déploiement de H.S.C.100
+include: package:flutter/analysis_options.yaml
 
-environment:
-  sdk: '>=3.0.0 <4.0.0'
+analyzer:
+  errors:
+    todo: ignore
+  exclude:
+    - build/**
 
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.6
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
-  uses-material-design: true
-  
+linter:
+  rules:
+    - avoid_print
+    
