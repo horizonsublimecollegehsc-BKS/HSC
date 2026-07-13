@@ -1,44 +1,41 @@
 #!/bin/bash
-
-# Étape 1 : Sécurité maximale. Arrêter immédiatement le script si une commande échoue (exit code != 0)
 set -e
 
-echo "=== 🚀 DÉBUT DU PROTOCOLE DE DÉPLOIEMENT H.S.C.100 ==="
+echo "=== 🕵️ STARTING PRODUCTION AUDIT & BUILD FOR H.S.C.100 ==="
 
-# Étape 2 : Nettoyage d'anciens résidus éventuels du cache
-echo "🧹 Nettoyage des répertoires temporaires..."
-rm -rf build
-rm -rf flutter_sdk
+# Définition des chemins de cache
+CACHE_DIR=".netlify_cache"
+FLUTTER_SDK_DIR="$CACHE_DIR/flutter"
 
-# Étape 3 : Téléchargement du SDK Flutter officiel (Version stable)
-echo "📥 Téléchargement du SDK Flutter Stable depuis les serveurs officiels..."
-# Utilisation de curl avec gestion des redirections (-L) et mode silencieux mais informatif (-sS)
-curl -L -sS https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.22.2-stable.tar.xz -o flutter.tar.xz
+# Créer le répertoire de cache s'il n'existe pas
+mkdir -p "$CACHE_DIR"
 
-echo "📦 Extraction du SDK Flutter..."
-tar -xf flutter.tar.xz
-rm flutter.tar.xz # Libère de l'espace disque immédiatement
+if [ ! -d "$FLUTTER_SDK_DIR" ]; then
+  echo "📥 Flutter SDK non trouvé dans le cache. Téléchargement de la version ${FLUTTER__VERSION}..."
+  curl -L -sS "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
+  
+  echo "📦 Extraction du SDK..."
+  tar -xf flutter.tar.xz -C "$CACHE_DIR"
+  rm flutter.tar.xz
+else
+  echo "⚡ Flutter SDK trouvé dans le cache ! Gain de temps activé."
+fi
 
-# Étape 4 : Injection du binaire Flutter dans le PATH du terminal actuel
-echo "⚙️ Configuration des variables d'environnement..."
-export PATH="$PATH:$(pwd)/flutter/bin"
+# Injection du PATH
+export PATH="$PATH:$(pwd)/$FLUTTER_SDK_DIR/bin"
 
-# Étape 5 : Désactivation des outils de tracking pour accélérer le processus de build
-echo "🛡️ Configuration de Flutter..."
+echo "⚙️ Configuration de Flutter pour le Web..."
 flutter config --no-analytics
 flutter config --enable-web
 
-# Étape 6 : Diagnostic rapide de l'environnement pour valider l'installation
-echo "🔍 Vérification du statut de Flutter..."
-flutter doctor -v
+echo "🔍 Diagnostic d'intégrité..."
+flutter doctor
 
-# Étape 7 : Installation des dépendances définies dans ton pubspec.yaml
-echo "📥 Récupération des packages et dépendances Dart/Flutter..."
+echo "📦 Restauration des dépendances de pubspec.yaml..."
 flutter pub get
 
-# Étape 8 : Compilation finale vers l'architecture Web de production
-echo "🏗️ Compilation du projet Flutter en mode Web (Release)..."
-flutter build web --release --canvaskit
+echo "🏗️ Compilation de l'interface Sun300 (Mode Web Release)..."
+# Utilisation du mode auto (choisit HTML pour le mobile léger et CanvasKit pour le desktop)
+flutter build web --release --web-renderer auto
 
-echo "=== 🎉 PROTOCOLE TERMINÉ AVEC SUCCÈS - PRÊT POUR LA MISE EN LIGNE ==="
-
+echo "=== 🎉 DEPLOYMENT READY FOR NETLIFY ==="
