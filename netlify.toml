@@ -1,5 +1,15 @@
 [build]
+  # Déclare la commande principale de build en exécutant notre script robuste
   command = "chmod +x build.sh && ./build.sh"
+  
+  # Le dossier où Flutter Web génère les fichiers HTML/JS de production
   publish = "build/web"
+
+[build.environment]
+  # Force Netlify à utiliser une version stable et récente de Node.js au cas où
+  NODE_VERSION = "20"
+  # Optimisation de la mémoire pour éviter les crashs légers sur les conteneurs de build
+  NODE_OPTIONS = "--max-old-space-size=4096"
+  
 
 
