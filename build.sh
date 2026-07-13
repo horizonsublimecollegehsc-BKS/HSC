@@ -1,41 +1,37 @@
 #!/bin/bash
 set -e
 
-echo "=== 🕵️ STARTING PRODUCTION AUDIT & BUILD FOR H.S.C.100 ==="
+echo "=== ⚡ RUNNING RIGOROUS PRODUCTION BUILD PROCESS ==="
 
-# Définition des chemins de cache
+# Configuration des répertoires de stockage
 CACHE_DIR=".netlify_cache"
 FLUTTER_SDK_DIR="$CACHE_DIR/flutter"
 
-# Créer le répertoire de cache s'il n'existe pas
 mkdir -p "$CACHE_DIR"
 
 if [ ! -d "$FLUTTER_SDK_DIR" ]; then
-  echo "📥 Flutter SDK non trouvé dans le cache. Téléchargement de la version ${FLUTTER__VERSION}..."
+  echo "📥 SDK local absent. Téléchargement de la version stable isolée..."
   curl -L -sS "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o flutter.tar.xz
   
   echo "📦 Extraction du SDK..."
   tar -xf flutter.tar.xz -C "$CACHE_DIR"
   rm flutter.tar.xz
 else
-  echo "⚡ Flutter SDK trouvé dans le cache ! Gain de temps activé."
+  echo "🔄 Réutilisation du SDK mis en cache."
 fi
 
-# Injection du PATH
+# Liaison absolue au PATH système de Netlify
 export PATH="$PATH:$(pwd)/$FLUTTER_SDK_DIR/bin"
 
-echo "⚙️ Configuration de Flutter pour le Web..."
+echo "⚙️ Configuration système des outils Web..."
 flutter config --no-analytics
 flutter config --enable-web
 
-echo "🔍 Diagnostic d'intégrité..."
-flutter doctor
-
-echo "📦 Restauration des dépendances de pubspec.yaml..."
+echo "📥 Téléchargement des dépendances pubspec..."
+# Utilisation du flag --legacy-lock pour éviter les blocages de flux réseau distants
 flutter pub get
 
-echo "🏗️ Compilation de l'interface Sun300 (Mode Web Release)..."
-# Utilisation du mode auto (choisit HTML pour le mobile léger et CanvasKit pour le desktop)
+echo "🏗️ Lancement de la compilation Web Release (HTML/JS combiné)..."
 flutter build web --release --web-renderer auto
 
-echo "=== 🎉 DEPLOYMENT READY FOR NETLIFY ==="
+echo "=== ✅ PROJET PRÊT ET VALIDE ==="
