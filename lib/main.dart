@@ -15,7 +15,7 @@ Widget _buildAccueilTab() {
           ),
         ),
 
-        // 1. MODULE COURS (Avec Gestion des 6 mois verrouillés et taux CDF)
+        // 1. MODULE COURS
         _buildSun300Tile(
           icon: Icons.menu_book_rounded,
           iconColor: const Color(0xFF1E88E5),
@@ -29,7 +29,7 @@ Widget _buildAccueilTab() {
               children: [
                 Icon(Icons.lock_rounded, size: 14, color: Colors.orange),
                 SizedBox(width: 4),
-                Text("4\$ (9.400 CDF) / Mois", style: TextStyle(fontSize: 11, color: Colors.orangeLinear, fontWeight: FontWeight.bold)),
+                Text("4\$ (9.400 CDF) / Mois", style: TextStyle(fontSize: 11, color: Colors.orange, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -45,7 +45,7 @@ Widget _buildAccueilTab() {
           onTap: () => _openFeatureDetails("Ouverture du calendrier H.S.C.100..."),
         ),
 
-        // 3. EXAMENS IA GÉNÉRATIVE (Anti-triche, 3 tentatives, le 30 du mois)
+        // 3. EXAMENS IA GÉNÉRATIVE
         _buildSun300Tile(
           icon: Icons.error_outline_rounded,
           iconColor: const Color(0xFFE53935),
@@ -111,7 +111,6 @@ Widget _buildAccueilTab() {
 
         // 9. CLUB D'ANGLAIS WHATSAPP
         _buildSun300Tile(
-          icon: Icons.环, // Icône de lien/groupe
           icon: Icons.groups_rounded,
           iconColor: const Color(0xFF25D366),
           title: "9. CLUB D'ANGLAIS (WHATSAPP)",
@@ -134,9 +133,7 @@ Widget _buildAccueilTab() {
   );
 }
 
-// =========================================================================
 // COMPOSANT GRAPHIQUE COMPATIBLE MAQUETTE SUN300
-// =========================================================================
 Widget _buildSun300Tile({
   required IconData icon,
   required Color iconColor,
@@ -146,7 +143,7 @@ Widget _buildSun300Tile({
   required VoidCallback onTap,
 }) {
   return Container(
-    margin: const EdgeInsets.bottom: 10),
+    margin: const EdgeInsets.only(bottom: 10), // Correction appliquée ici !
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(14),
